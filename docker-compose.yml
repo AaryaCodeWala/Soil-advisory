@@ -1,0 +1,49 @@
+services:
+
+  # ── FastAPI — soil parameter maps & fertilizer recommendations ──────────────
+  api:
+    build: .
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro          # pre-generated GeoTIFFs + model artifacts
+      - ./pipeline:/app/pipeline:ro  # fertilizer tables & config (read-only)
+    environment:
+      PYTHONUNBUFFERED: "1"
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Plotly Dash — officials + farmer advisory dashboard ────────────────────
+  dashboard:
+    build: .
+    command: python dashboard/app.py
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./data:/app/data:ro
+      - ./pipeline:/app/pipeline:ro
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DASH_HOST: "0.0.0.0"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── One-shot: run the full prediction pipeline (optional, GPU-friendly) ─────
+  predict:
+    build: .
+    command: python pipeline/05_predict_maps.py --all-params
+    volumes:
+      - ./data:/app/data          # read-write: writes prediction GeoTIFFs
+      - ./pipeline:/app/pipeline
+    environment:
+      PYTHONUNBUFFERED: "1"
+    profiles:
+      - predict                   # only runs with: docker compose --profile predict up

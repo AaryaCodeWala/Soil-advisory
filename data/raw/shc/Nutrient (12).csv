@@ -1,0 +1,12 @@
+Cycle: 2025-26  •  Scheme: Soil Health Card RKVY
+
+State,District,Block,Village,Scheme,Cycle,N_High,N_Medium,N_Low,P_High,P_Medium,P_Low,K_High,K_Medium,K_Low,OC_High,OC_Medium,OC_Low,P H_Alkaline,P H_Acidic,P H_Neutral,EC_Non Saline,EC_Saline,S_Sufficient,S_Deficient,Fe_Sufficient,Fe_Deficient,Zn_Sufficient,Zn_Deficient,Cu_Sufficient,Cu_Deficient,B_Sufficient,B_Deficient,Mn_Sufficient,Mn_Deficient
+Koduru,KRISHNA,KODURU - 5120,Koduru,Soil Health Card RKVY,2025-26,0,0,100,0.93,59.72,39.35,0,0,100,18.52,62.04,19.44,0,0,100,98.61,1.39,99.54,0.46,43.98,56.02,34.72,65.28,99.07,0.93,30.56,69.44,86.11,13.89
+Lingareddipalem,KRISHNA,KODURU - 5120,Lingareddipalem,Soil Health Card RKVY,2025-26,0,0,100,0,88.71,11.29,0,0,100,11.29,74.19,14.52,0,0,100,100,0,100,0,0,100,27.42,72.58,100,0,27.42,72.58,27.42,72.58
+Machavaram,KRISHNA,KODURU - 5120,Machavaram,Soil Health Card RKVY,2025-26,0,0,100,7.41,59.26,33.33,0,0,100,0,92.59,7.41,0,0,100,100,0,100,0,0,100,0,100,100,0,3.7,96.3,7.41,92.59
+Mandapakala,KRISHNA,KODURU - 5120,Mandapakala,Soil Health Card RKVY,2025-26,0,0,100,0,89.66,10.34,0,0,100,6.9,58.62,34.48,0,0,100,100,0,100,0,1.72,98.28,36.21,63.79,93.1,6.9,51.72,48.28,37.93,62.07
+Pittallanka,KRISHNA,KODURU - 5120,Pittallanka,Soil Health Card RKVY,2025-26,0,0,100,2,62,36,0,0,100,2,60,38,0,0,100,100,0,100,0,2,98,34,66,98,2,18,82,16,84
+Ramakrishnapuram,KRISHNA,KODURU - 5120,Ramakrishnapuram,Soil Health Card RKVY,2025-26,0,0,100,20.37,70.37,9.26,0,0,100,5.56,68.52,25.93,0,0,100,100,0,100,0,0,100,25.93,74.07,100,0,0,100,16.67,83.33
+Salempalem,KRISHNA,KODURU - 5120,Salempalem,Soil Health Card RKVY,2025-26,0,0,100,0,52.05,47.95,0,0,100,6.85,65.75,27.4,0,0,100,98.63,1.37,100,0,0,100,0,100,100,0,34.25,65.75,0,100
+Ullipalem,KRISHNA,KODURU - 5120,Ullipalem,Soil Health Card RKVY,2025-26,0,0,100,5.26,45.61,49.12,0,0,100,5.26,68.42,26.32,0,0,100,98.25,1.75,100,0,0,100,0,100,100,0,63.16,36.84,0,100
+Viswanadhapalle,KRISHNA,KODURU - 5120,Viswanadhapalle,Soil Health Card RKVY,2025-26,0,0,100,8.11,64.86,27.03,0,0,100,6.31,63.06,30.63,0,0,100,100,0,99.1,0.9,0,100,0,100,100,0,31.53,68.47,0,100

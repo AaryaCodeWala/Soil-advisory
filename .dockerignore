@@ -1,0 +1,24 @@
+# Virtual environments
+.venv/
+venv/
+
+# Large training artifacts not needed in the serve image
+# (model .cbm files in data/ are mounted as a volume at runtime)
+data/
+
+# IDE / OS
+.claude/
+.git/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+# Dev/notebook files
+IGNORE/
+*.ipynb
+*.log
+
+# Docs (not needed in container)
+docs/
