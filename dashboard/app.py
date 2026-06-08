@@ -79,6 +79,15 @@ AMBER = "#e65100"
 # Data loading  (None-results are NOT cached so maps are picked up on next call)
 # ---------------------------------------------------------------------------
 
+# Agronomic ranges used to convert interval width → meaningful confidence score.
+# SOIL_THRESHOLDS uses 99.0 as a sentinel for "no upper limit" which would make
+# every confidence score ≈ 100% — these are real AP field ranges instead.
+_PARAM_RANGE = {
+    "pH":  6.0,   "EC":  4.0,   "OC":  2.5,
+    "N":  560.0,  "P":  50.0,   "K":  400.0,
+    "Fe":  20.0,  "Cu":  2.0,   "B":   3.0,   "Zn": 3.0,
+}
+
 _data_cache: dict = {}
 
 def load_param_data(param: str, n_samples: int = 4000) -> pd.DataFrame | None:
@@ -86,7 +95,8 @@ def load_param_data(param: str, n_samples: int = 4000) -> pd.DataFrame | None:
         return _data_cache[param]
 
     pred_path = MAPS_DIR / f"{param}_{WINDOW}_prediction.tif"
-    conf_path = MAPS_DIR / f"{param}_{WINDOW}_confidence.tif"
+    lo_path   = MAPS_DIR / f"{param}_{WINDOW}_interval_lo.tif"
+    hi_path   = MAPS_DIR / f"{param}_{WINDOW}_interval_hi.tif"
     if not pred_path.exists():
         return None
 
@@ -98,8 +108,17 @@ def load_param_data(param: str, n_samples: int = 4000) -> pd.DataFrame | None:
         bounds = src.bounds
         crs    = src.crs
 
-    with rasterio.open(conf_path) as src:
-        conf = src.read(1, out_shape=(sh, sw), resampling=Resampling.average).astype(np.float32)
+    # Recalculate confidence from interval width using proper agronomic ranges
+    if lo_path.exists() and hi_path.exists():
+        with rasterio.open(lo_path) as src:
+            lo = src.read(1, out_shape=(sh, sw), resampling=Resampling.average).astype(np.float32)
+        with rasterio.open(hi_path) as src:
+            hi = src.read(1, out_shape=(sh, sw), resampling=Resampling.average).astype(np.float32)
+        param_range = _PARAM_RANGE.get(param, 1.0)
+        width = np.clip(hi - lo, 0, param_range)
+        conf  = np.clip(1.0 - width / param_range, 0.0, 1.0).astype(np.float32)
+    else:
+        conf = np.ones_like(data) * 0.5
 
     valid = ~np.isnan(data)
     if not valid.any():

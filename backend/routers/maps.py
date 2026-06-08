@@ -1,10 +1,12 @@
 """Map data endpoints — raster statistics and GeoJSON point samples."""
 
+import io
 import sys
 from pathlib import Path
 
 import numpy as np
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import Response
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "pipeline"))
 from config import PROCESSED_DIR, SOIL_PARAMS, BARE_SOIL_WINDOWS, HIGH_CONFIDENCE_THRESHOLD
@@ -22,7 +24,15 @@ except ImportError:
 router = APIRouter(prefix="/maps", tags=["maps"])
 
 MAPS_DIR = PROCESSED_DIR / "maps"
-DEFAULT_WINDOW = BARE_SOIL_WINDOWS[0]["label"]
+_FALLBACK_WINDOW = BARE_SOIL_WINDOWS[0]["label"]
+
+def _default_window() -> str:
+    """Prefer combined models if they exist, else fall back to first satellite window."""
+    if (MAPS_DIR / f"pH_combined_prediction.tif").exists():
+        return "combined"
+    return _FALLBACK_WINDOW
+
+DEFAULT_WINDOW = _default_window()
 
 
 def _pred_path(param: str, window: str) -> Path:
@@ -66,8 +76,9 @@ def _deficiency_pct(values: np.ndarray, param: str) -> float:
 
 
 @router.get("/status")
-def map_status(window: str = DEFAULT_WINDOW) -> list[ParameterStatus]:
+def map_status(window: str = None) -> list[ParameterStatus]:
     """List all parameters and whether their prediction maps exist."""
+    window = window or _default_window()
     result = []
     for param in SOIL_PARAMS:
         pp = _pred_path(param, window)
@@ -83,7 +94,8 @@ def map_status(window: str = DEFAULT_WINDOW) -> list[ParameterStatus]:
 
 
 @router.get("/{param}/stats", response_model=MapStats)
-def map_stats(param: str, window: str = DEFAULT_WINDOW):
+def map_stats(param: str, window: str = None):
+    window = window or _default_window()
     """
     Compute summary statistics for a prediction map.
     Downsamples to 500×500 for speed.
@@ -141,9 +153,10 @@ def map_stats(param: str, window: str = DEFAULT_WINDOW):
 @router.get("/{param}/points", response_model=PointCollection)
 def map_points(
     param: str,
-    window: str = DEFAULT_WINDOW,
+    window: str = None,
     n: int = Query(2000, ge=100, le=10000, description="Number of random sample points"),
 ):
+    window = window or _default_window()
     """
     Return a GeoJSON FeatureCollection of n random sample points from a prediction map.
     Coordinates are in WGS84 (EPSG:4326) for direct use in web maps.
@@ -221,4 +234,62 @@ def map_points(
         param=param,
         window=window,
         n_points=len(features),
+    )
+
+
+@router.get("/{param}/raster.png")
+def raster_png(
+    param: str,
+    window: str = None,
+    layer: str = Query("prediction", description="'prediction' or 'confidence'"),
+    invert: bool = False,
+):
+    """
+    Render a prediction or confidence raster as an RGBA PNG with a RdYlGn colormap.
+    Nodata pixels are transparent. Used by the frontend SVG map overlay.
+    """
+    _require_rasterio()
+    if param not in SOIL_PARAMS:
+        raise HTTPException(status_code=404, detail=f"Unknown param '{param}'")
+
+    window = window or _default_window()
+    path = _conf_path(param, window) if layer == "confidence" else _pred_path(param, window)
+    _require_map(path)
+
+    with rasterio.open(path) as src:
+        data = src.read(1, out_shape=(400, 400), resampling=Resampling.average).astype(np.float32)
+        nodata = src.nodata
+
+    if nodata is not None:
+        data[data == nodata] = np.nan
+
+    valid_mask = ~np.isnan(data)
+    if not valid_mask.any():
+        raise HTTPException(status_code=422, detail="No valid pixels")
+
+    v_min = float(np.nanpercentile(data, 2))
+    v_max = float(np.nanpercentile(data, 98))
+    if v_max == v_min:
+        v_max = v_min + 1.0
+
+    norm = np.clip((data - v_min) / (v_max - v_min), 0.0, 1.0)
+    if invert:
+        norm = 1.0 - norm
+
+    # RdYlGn colormap: red=0 (deficient), yellow=0.5, green=1 (optimal)
+    import matplotlib.cm as cm
+    cmap = cm.RdYlGn
+    rgba = (cmap(norm) * 255).astype(np.uint8)
+    rgba[~valid_mask, 3] = 0  # transparent nodata
+
+    from PIL import Image
+    img = Image.fromarray(rgba, mode="RGBA")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+
+    return Response(
+        content=buf.read(),
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
     )

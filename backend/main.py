@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "pipeline"))
 
-from backend.routers import recommendations, maps, sms
+from backend.routers import recommendations, maps, sms, suitability, weather
 
 app = FastAPI(
     title="Soil Advisory API — Andhra Pradesh",
@@ -41,6 +41,8 @@ app.add_middleware(
 app.include_router(recommendations.router, prefix="/api")
 app.include_router(maps.router,            prefix="/api")
 app.include_router(sms.router,             prefix="/api")
+app.include_router(suitability.router,     prefix="/api")
+app.include_router(weather.router,         prefix="/api")
 
 
 @app.get("/api/health", tags=["health"])

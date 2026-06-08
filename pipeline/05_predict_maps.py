@@ -119,22 +119,33 @@ def load_models(model_files: dict) -> dict:
 # Confidence score
 # ---------------------------------------------------------------------------
 
+PARAM_TYPICAL_RANGE = {
+    "pH":  6.0,    # 4.0 – 10.0  practical AP soil range
+    "EC":  4.0,    # 0.0 –  4.0  normal to highly saline
+    "OC":  2.5,    # 0.0 –  2.5  %
+    "N":   560.0,  # 0   – 560   kg/ha (low–high threshold span)
+    "P":   50.0,   # 0   –  50   kg/ha
+    "K":   400.0,  # 0   – 400   kg/ha
+    "Fe":  20.0,   # 0   –  20   ppm DTPA
+    "Cu":  2.0,    # 0   –   2   ppm DTPA
+    "B":   3.0,    # 0   –   3   ppm hot-water
+    "Zn":  3.0,    # 0   –   3   ppm DTPA
+    "S":   50.0,   # 0   –  50   ppm
+}
+
 def interval_to_confidence(lo: np.ndarray, hi: np.ndarray, param: str) -> np.ndarray:
     """
     Normalise interval width to a 0–1 confidence score.
-    Narrow interval → high confidence.
-    Uses the typical parameter range from ICAR thresholds to normalise.
+    Narrow interval relative to typical AP soil range → high confidence.
+    Uses agronomically meaningful ranges, NOT ICAR threshold sentinels (which
+    use 99.0 as 'no upper limit' and would make every score ~100%).
     """
-    thresholds = SOIL_THRESHOLDS.get(param, {})
-    all_vals = [v for rng in thresholds.values() for v in rng if v < 9000]
-    if all_vals:
-        param_range = max(all_vals) - min(all_vals)
-    else:
-        param_range = np.nanpercentile(hi - lo, 95)  # fallback
-
+    param_range = PARAM_TYPICAL_RANGE.get(param, None)
+    if param_range is None:
+        param_range = float(np.nanpercentile(hi - lo, 95)) * 10
     param_range = max(param_range, 1e-6)
-    width       = np.clip(hi - lo, 0, param_range)
-    confidence  = 1.0 - (width / param_range)
+    width      = np.clip(hi - lo, 0, param_range)
+    confidence = 1.0 - (width / param_range)
     return np.clip(confidence, 0.0, 1.0).astype(np.float32)
 
 
@@ -198,15 +209,41 @@ def _clip_to_training_bounds(data: np.ndarray, window_label: str) -> np.ndarray:
     return data
 
 
-def _load_stack_strided(stack_path: Path, ds: int) -> np.ndarray:
+KRISHNA_BOUNDS_LATLON = (80.58, 15.65, 81.62, 16.82)  # (minlon, minlat, maxlon, maxlat)
+
+
+def _crop_window(stack_path: Path, minlon: float, minlat: float,
+                 maxlon: float, maxlat: float) -> rasterio.windows.Window | None:
+    """Return rasterio Window for the given lat/lon bounding box, or None if full extent."""
+    from rasterio.crs import CRS
+    from rasterio.warp import transform_bounds
+    with rasterio.open(stack_path) as src:
+        src_crs = src.crs
+        bounds  = transform_bounds("EPSG:4326", src_crs, minlon, minlat, maxlon, maxlat)
+        win = src.window(*bounds)
+        # Clamp to valid pixel range
+        win = win.intersection(rasterio.windows.Window(0, 0, src.width, src.height))
+    return win
+
+
+def _load_stack_strided(stack_path: Path, ds: int,
+                        crop_win: "rasterio.windows.Window | None" = None) -> np.ndarray:
     """Read feature stack at full resolution in 512-row strips then stride-sample.
 
+    crop_win: if provided, only reads pixels inside that rasterio Window.
     GDAL silently converts float32 NaN → 0 when doing downsampled reads on
     LZW-compressed files without a declared nodata value.  Reading at full
     resolution and stride-sampling in numpy avoids that bug entirely.
     """
     with rasterio.open(stack_path) as src:
-        H, W    = src.height, src.width
+        if crop_win is not None:
+            col_off = int(crop_win.col_off)
+            row_off = int(crop_win.row_off)
+            W       = int(crop_win.width)
+            H       = int(crop_win.height)
+        else:
+            col_off, row_off = 0, 0
+            H, W = src.height, src.width
         n_bands = src.count
         nodata  = src.nodata
 
@@ -221,21 +258,19 @@ def _load_stack_strided(stack_path: Path, ds: int) -> np.ndarray:
         for ci in tqdm(range(n_chunks), desc="Loading stack (full-res strips)"):
             row_start = ci * IN_CHUNK
             row_end   = min(row_start + IN_CHUNK, H)
-            win       = rasterio.windows.Window(0, row_start, W, row_end - row_start)
+            win       = rasterio.windows.Window(col_off, row_off + row_start, W, row_end - row_start)
 
             chunk = src.read(window=win).astype(np.float32)
             if nodata is not None:
                 chunk[chunk == nodata] = np.nan
 
-            # Pick only rows whose global index is a multiple of ds
             global_rows   = np.arange(row_start, row_end)
             local_sampled = np.where(global_rows % ds == 0)[0]
             if len(local_sampled) == 0:
                 continue
             out_rows = global_rows[local_sampled] // ds
 
-            # Stride-sample columns too
-            sampled = chunk[:, local_sampled, :][:, :, ::ds]  # (bands, n, W_out)
+            sampled = chunk[:, local_sampled, :][:, :, ::ds]
             valid   = out_rows < H_out
             data_out[:, out_rows[valid], :sampled.shape[2]] = sampled[:, valid, :]
 
@@ -247,6 +282,7 @@ def _run_inference_on_chunk(
     models: dict,
     weights: dict,
     use_gpr: bool,
+    use_qrf: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Run ensemble inference on a 2-D pixel matrix (N, bands). Returns (pred, lo, hi)."""
     valid = ~np.any(np.isnan(X_flat), axis=1) & ~np.all(X_flat == 0, axis=1)
@@ -296,7 +332,7 @@ def _run_inference_on_chunk(
         except Exception:
             pass
 
-    if "qrf" in models and "qrf" in weights:
+    if use_qrf and "qrf" in models and "qrf" in weights:
         try:
             qrf = models["qrf"]
             y_mid = qrf["mid"].predict(X_valid)
@@ -325,7 +361,9 @@ def predict_raster(
     feature_cols: list[str],
     downsample: int = 1,
     use_gpr: bool = True,
+    use_qrf: bool = True,
     data_full: np.ndarray | None = None,
+    crop_win=None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Predict across the full feature stack in row chunks.
@@ -338,7 +376,10 @@ def predict_raster(
     Returns (pred, lo, hi, confidence) arrays of shape (H_out, W_out).
     """
     with rasterio.open(stack_path) as src:
-        H, W    = src.height, src.width
+        if crop_win is not None:
+            H, W = int(crop_win.height), int(crop_win.width)
+        else:
+            H, W = src.height, src.width
         n_bands = src.count
         nodata  = src.nodata
 
@@ -356,7 +397,7 @@ def predict_raster(
     if ds > 1:
         if data_full is None:
             logger.info(f"  Reading stack via full-res strips (1/{ds} stride)…")
-            data_full  = _load_stack_strided(stack_path, ds)
+            data_full  = _load_stack_strided(stack_path, ds, crop_win=crop_win)
             _free_after = True
         else:
             _free_after = False
@@ -370,7 +411,7 @@ def predict_raster(
             chunk = data_full[:, out_rs:out_re, :]
             X = chunk.reshape(n_bands, -1).T
 
-            p, lo, hi = _run_inference_on_chunk(X, models, weights, use_gpr)
+            p, lo, hi = _run_inference_on_chunk(X, models, weights, use_gpr, use_qrf)
             pred_arr[out_rs:out_re, :] = p.reshape(out_h, W_out)
             lo_arr[out_rs:out_re, :]   = lo.reshape(out_h, W_out)
             hi_arr[out_rs:out_re, :]   = hi.reshape(out_h, W_out)
@@ -392,7 +433,7 @@ def predict_raster(
                     data[data == nodata] = np.nan
 
                 X = data.reshape(n_bands, -1).T
-                p, lo, hi = _run_inference_on_chunk(X, models, weights, use_gpr)
+                p, lo, hi = _run_inference_on_chunk(X, models, weights, use_gpr, use_qrf)
                 pred_arr[out_rs:out_re, :] = p.reshape(out_h, W)
                 lo_arr[out_rs:out_re, :]   = lo.reshape(out_h, W)
                 hi_arr[out_rs:out_re, :]   = hi.reshape(out_h, W)
@@ -423,9 +464,13 @@ def predict_param(
     window_label: str,
     downsample: int = 1,
     use_gpr: bool = True,
+    use_qrf: bool = True,
     data_full: np.ndarray | None = None,
+    stack_window: str | None = None,
+    crop_win=None,
 ):
-    stack_path = PROCESSED_DIR / f"feature_stack_{window_label}.tif"
+    effective_stack_window = stack_window or window_label
+    stack_path = PROCESSED_DIR / f"feature_stack_{effective_stack_window}.tif"
     if not stack_path.exists():
         logger.error(f"Feature stack not found: {stack_path}. Run 02_feature_engineering.py first.")
         return
@@ -438,34 +483,38 @@ def predict_param(
     models       = load_models(model_files)
     feature_cols = models.get("meta", {}).get("feature_cols", [])
 
-    ds_note  = f" (downsample={downsample})" if downsample > 1 else ""
-    gpr_note = " [GPR skipped]" if not use_gpr else ""
-    cached   = " [stack cached]" if data_full is not None else ""
-    logger.info(f"Predicting {param} across full raster{ds_note}{gpr_note}{cached}…")
+    ds_note    = f" (downsample={downsample})" if downsample > 1 else ""
+    gpr_note   = " [GPR skipped]" if not use_gpr else ""
+    cached     = " [stack cached]" if data_full is not None else ""
+    crop_note  = " [Krishna District crop]" if crop_win is not None else ""
+    logger.info(f"Predicting {param}{ds_note}{gpr_note}{cached}{crop_note}…")
 
     pred, lo, hi, conf = predict_raster(
         param, models, stack_path, feature_cols,
-        downsample=downsample, use_gpr=use_gpr, data_full=data_full,
+        downsample=downsample, use_gpr=use_gpr, use_qrf=use_qrf,
+        data_full=data_full, crop_win=crop_win,
     )
     class_arr = classify(pred, param)
 
     MAPS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Build output profile — update dimensions and transform if downsampled
+    # Build output profile — update bounds/dimensions for crop and/or downsample
     with rasterio.open(stack_path) as src:
         profile = src.profile.copy()
-        bounds  = src.bounds
+        if crop_win is not None:
+            crop_bounds = rasterio.windows.bounds(crop_win, src.transform)
+        else:
+            crop_bounds = src.bounds
 
-    if downsample > 1:
-        H_out, W_out = pred.shape
-        profile.update({
-            "height":    H_out,
-            "width":     W_out,
-            "transform": from_bounds(
-                bounds.left, bounds.bottom, bounds.right, bounds.top,
-                W_out, H_out,
-            ),
-        })
+    H_out, W_out = pred.shape
+    profile.update({
+        "height":    H_out,
+        "width":     W_out,
+        "transform": from_bounds(
+            crop_bounds[0], crop_bounds[1], crop_bounds[2], crop_bounds[3],
+            W_out, H_out,
+        ),
+    })
 
     for arr, suffix, dtype in [
         (pred,      "prediction",  "float32"),
@@ -496,45 +545,67 @@ def main():
         choices=[w["label"] for w in BARE_SOIL_WINDOWS],
     )
     parser.add_argument(
+        "--combined", action="store_true",
+        help="Use models trained on combined_training_data.csv (window label 'combined')",
+    )
+    parser.add_argument(
         "--downsample", type=int, default=1, metavar="N",
         help="Spatial reduction factor (e.g. 5 → 50m output, ~20x faster). "
              "Dashboard display is unaffected; 500×500 resampling happens at read time.",
     )
     parser.add_argument(
         "--no-gpr", action="store_true",
-        help="Skip the GPR ensemble member. Negligible accuracy loss; "
-             "large speedup since GPR inference dominates on million-pixel chunks.",
+        help="Skip the GPR ensemble member.",
+    )
+    parser.add_argument(
+        "--no-qrf", action="store_true",
+        help="Skip QRF (3 slow GradientBoosting models). MAPIE alone gives calibrated intervals. ~10x faster.",
+    )
+    parser.add_argument(
+        "--krishna", action="store_true",
+        help="Crop output to Krishna District bounds only (much faster than full AP).",
     )
     args = parser.parse_args()
 
+    window_label = "combined" if args.combined else args.window
     params = SOIL_PARAMS if args.all_params else ([args.param] if args.param else ["pH", "EC", "OC"])
 
-    # Pre-load the feature stack once at reduced resolution and share it across
-    # all parameters — avoids re-reading 37 GB from disk for each param.
+    stack_window = args.window
+    stack_path   = PROCESSED_DIR / f"feature_stack_{stack_window}.tif"
+
+    # Compute crop window for Krishna District if requested
+    crop_win = None
+    if args.krishna and stack_path.exists():
+        minlon, minlat, maxlon, maxlat = KRISHNA_BOUNDS_LATLON
+        crop_win = _crop_window(stack_path, minlon, minlat, maxlon, maxlat)
+        logger.info(f"Krishna crop window: {int(crop_win.width)}×{int(crop_win.height)} px")
+
+    # Pre-load the feature stack once (cropped if --krishna) and share across params
     data_full = None
-    if args.downsample > 1 and len(params) > 1:
-        stack_path = PROCESSED_DIR / f"feature_stack_{args.window}.tif"
-        if stack_path.exists():
-            with rasterio.open(stack_path) as src:
-                H, W    = src.height, src.width
-                n_bands = src.count
-                nodata  = src.nodata
-            ds    = args.downsample
-            H_out, W_out = (H + ds - 1) // ds, (W + ds - 1) // ds
-            logger.info(
-                f"Pre-loading feature stack via full-res strips → 1/{ds} stride "
-                f"({H_out}×{W_out}×{n_bands}, shared across {len(params)} params)…"
-            )
-            data_full = _load_stack_strided(stack_path, ds)
-            logger.success(f"  Stack loaded ({data_full.nbytes / 1e9:.2f} GB in RAM)")
-            data_full = _clip_to_training_bounds(data_full, args.window)
+    if args.downsample > 1 and len(params) > 1 and stack_path.exists():
+        ds = args.downsample
+        with rasterio.open(stack_path) as src:
+            H = int(crop_win.height) if crop_win else src.height
+            W = int(crop_win.width)  if crop_win else src.width
+            n_bands = src.count
+        H_out, W_out = (H + ds - 1) // ds, (W + ds - 1) // ds
+        logger.info(
+            f"Pre-loading feature stack → 1/{ds} stride "
+            f"({H_out}×{W_out}×{n_bands}, shared across {len(params)} params)…"
+        )
+        data_full = _load_stack_strided(stack_path, ds, crop_win=crop_win)
+        logger.success(f"  Stack loaded ({data_full.nbytes / 1e6:.0f} MB in RAM)")
+        data_full = _clip_to_training_bounds(data_full, stack_window)
 
     for param in params:
         predict_param(
-            param, args.window,
+            param, window_label,
             downsample=args.downsample,
             use_gpr=not args.no_gpr,
+            use_qrf=not args.no_qrf,
             data_full=data_full,
+            stack_window=stack_window if args.combined else None,
+            crop_win=crop_win,
         )
 
     logger.success(f"Maps saved to {MAPS_DIR}")

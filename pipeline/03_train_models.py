@@ -93,8 +93,8 @@ def build_mapie_catboost(X_train, y_train, param: str):
     from mapie.regression import CrossConformalRegressor
 
     base = CatBoostRegressor(
-        iterations=500,
-        learning_rate=0.05,
+        iterations=300,
+        learning_rate=0.08,
         depth=6,
         random_seed=42,
         verbose=0,
@@ -103,7 +103,7 @@ def build_mapie_catboost(X_train, y_train, param: str):
         estimator=base,
         confidence_level=0.90,
         method="plus",
-        cv=5,
+        cv=3,
         n_jobs=-1,
     )
     mapie.fit_conformalize(X_train, y_train)
@@ -149,9 +149,9 @@ def build_qrf(X_train, y_train, param: str):
         m = GradientBoostingRegressor(
             loss="quantile",
             alpha=q,
-            n_estimators=200,
+            n_estimators=100,
             max_depth=4,
-            learning_rate=0.05,
+            learning_rate=0.08,
             random_state=42,
         )
         m.fit(X_train, y_train)
@@ -350,16 +350,40 @@ def main():
         default=BARE_SOIL_WINDOWS[0]["label"],
         choices=[w["label"] for w in BARE_SOIL_WINDOWS],
     )
+    parser.add_argument(
+        "--combined", action="store_true",
+        help="Use combined_training_data.csv (real + synthetic, 5299 rows) instead of window-specific CSV",
+    )
+    parser.add_argument(
+        "--skip-done", action="store_true",
+        help="Skip parameters that already have a saved model in data/models/",
+    )
     args = parser.parse_args()
 
     params_to_train = SOIL_PARAMS if args.all_params else ([args.param] if args.param else ["pH", "EC", "OC"])
 
-    csv_path = PROCESSED_DIR / f"training_data_{args.window}.csv"
+    if args.skip_done:
+        done = {f.name.split("_")[0] for f in MODELS_DIR.glob("*_combined_*_meta.json")}
+        before = params_to_train[:]
+        params_to_train = [p for p in params_to_train if p not in done]
+        logger.info(f"Skipping already-trained: {sorted(done & set(before))}")
+        logger.info(f"Remaining: {params_to_train}")
+
+    if args.combined:
+        csv_path = PROCESSED_DIR / "combined_training_data.csv"
+        window_label = "combined"
+    else:
+        csv_path = PROCESSED_DIR / f"training_data_{args.window}.csv"
+        window_label = args.window
+
     if not csv_path.exists():
-        logger.error(f"Training data not found: {csv_path}. Run 04_extract_training_data.py first.")
+        logger.error(f"Training data not found: {csv_path}")
         return
 
     df = pd.read_csv(csv_path)
+    # Drop synthetic-only marker column if present
+    if "source" in df.columns:
+        df = df.drop(columns=["source"])
     logger.info(f"Loaded training data: {len(df):,} rows, {len(df.columns)} columns")
 
     feature_cols = [
@@ -372,7 +396,7 @@ def main():
 
     all_meta = []
     for param in params_to_train:
-        meta = train_for_param(param, df, feature_cols, args.window)
+        meta = train_for_param(param, df, feature_cols, window_label)
         if meta:
             all_meta.append(meta)
 
