@@ -1,0 +1,11 @@
+2026-06-09 17:08:46.201 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | ERROR    | __main__:predict_param:475 - Feature stack not found: /home/jagat/shri/Soil-advisory/data/processed/feature_stack_post_kharif_2024.tif. Run 02_feature_engineering.py first.
+2026-06-09 17:08:46.202 | SUCCESS  | __main__:main:611 - Maps saved to /home/jagat/shri/Soil-advisory/data/processed/maps

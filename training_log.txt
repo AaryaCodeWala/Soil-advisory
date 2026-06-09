@@ -1,0 +1,335 @@
+2026-06-09 11:36:14.801 | INFO     | __main__:main:390 - Loaded training data: 5,298 rows, 50 columns
+2026-06-09 11:36:14.801 | INFO     | __main__:main:398 - Feature columns: 38
+2026-06-09 11:36:14.807 | INFO     | __main__:train_for_param:216 - 
+── pH: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14491.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 11:48:57.749 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.2007  R²=0.175  Coverage=90.85%  CalErr=0.0111
+2026-06-09 11:48:57.749 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.2070  R²=0.124  Coverage=92.25%  CalErr=0.0225
+2026-06-09 11:48:57.749 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.2067  R²=0.126  Coverage=88.54%  CalErr=0.0146
+2026-06-09 11:48:57.750 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.444), 'gpr': np.float64(0.219), 'qrf': np.float64(0.337)}
+2026-06-09 11:48:57.750 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 11:51:44.628 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/pH_combined_rmse0.201_r20.175_[mapie|gpr|qrf].pkl
+2026-06-09 11:51:44.633 | INFO     | __main__:train_for_param:216 - 
+── EC: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:05:09.389 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.5350  R²=0.167  Coverage=90.74%  CalErr=0.0106
+2026-06-09 12:05:09.389 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.5492  R²=0.123  Coverage=91.91%  CalErr=0.0191
+2026-06-09 12:05:09.389 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.5826  R²=0.013  Coverage=86.56%  CalErr=0.0661
+2026-06-09 12:05:09.389 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.583), 'gpr': np.float64(0.324), 'qrf': np.float64(0.093)}
+2026-06-09 12:05:09.389 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:07:46.245 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/EC_combined_rmse0.535_r20.167_[mapie|gpr|qrf].pkl
+2026-06-09 12:07:46.250 | INFO     | __main__:train_for_param:216 - 
+── OC: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:18:43.819 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.1011  R²=0.574  Coverage=90.67%  CalErr=0.0149
+2026-06-09 12:18:43.819 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.1013  R²=0.571  Coverage=90.85%  CalErr=0.0169
+2026-06-09 12:18:43.819 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.1011  R²=0.573  Coverage=86.87%  CalErr=0.0313
+2026-06-09 12:18:43.819 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.424), 'gpr': np.float64(0.374), 'qrf': np.float64(0.202)}
+2026-06-09 12:18:43.819 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:21:17.790 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/OC_combined_rmse0.101_r20.574_[mapie|gpr|qrf].pkl
+2026-06-09 12:21:17.795 | INFO     | __main__:train_for_param:216 - 
+── N: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:33:23.269 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=39.4599  R²=0.299  Coverage=90.87%  CalErr=0.0207
+2026-06-09 12:33:23.269 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=38.8845  R²=0.321  Coverage=91.32%  CalErr=0.0265
+2026-06-09 12:33:23.269 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=38.7289  R²=0.327  Coverage=93.81%  CalErr=0.0381
+2026-06-09 12:33:23.269 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.43), 'gpr': np.float64(0.336), 'qrf': np.float64(0.234)}
+2026-06-09 12:33:23.269 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:36:11.879 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/N_combined_rmse39.460_r20.299_[mapie|gpr|qrf].pkl
+2026-06-09 12:36:11.884 | INFO     | __main__:train_for_param:216 - 
+── P: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:48:39.495 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=9.1760  R²=-0.037  Coverage=90.33%  CalErr=0.0148
+2026-06-09 12:48:39.495 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=9.0613  R²=-0.011  Coverage=90.98%  CalErr=0.0105
+2026-06-09 12:48:39.495 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=9.2327  R²=-0.050  Coverage=88.91%  CalErr=0.0189
+2026-06-09 12:48:39.495 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.313), 'gpr': np.float64(0.441), 'qrf': np.float64(0.245)}
+2026-06-09 12:48:39.495 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 12:50:52.212 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/P_combined_rmse9.176_r2-0.037_[mapie|gpr|qrf].pkl
+2026-06-09 12:50:52.217 | INFO     | __main__:train_for_param:216 - 
+── K: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:02:29.493 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=114.5722  R²=-0.045  Coverage=90.17%  CalErr=0.0179
+2026-06-09 13:02:29.493 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=112.1754  R²=-0.002  Coverage=88.93%  CalErr=0.0227
+2026-06-09 13:02:29.493 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=125.6755  R²=-0.257  Coverage=86.57%  CalErr=0.0710
+2026-06-09 13:02:29.493 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.49), 'gpr': np.float64(0.386), 'qrf': np.float64(0.124)}
+2026-06-09 13:02:29.493 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:04:17.717 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/K_combined_rmse114.572_r2-0.045_[mapie|gpr|qrf].pkl
+2026-06-09 13:04:17.723 | INFO     | __main__:train_for_param:216 - 
+── Fe: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:16:55.763 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=2.4798  R²=0.579  Coverage=90.77%  CalErr=0.0102
+2026-06-09 13:16:55.763 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=2.5072  R²=0.569  Coverage=89.07%  CalErr=0.0144
+2026-06-09 13:16:55.763 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=2.5562  R²=0.552  Coverage=87.99%  CalErr=0.0201
+2026-06-09 13:16:55.763 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.451), 'gpr': np.float64(0.32), 'qrf': np.float64(0.229)}
+2026-06-09 13:16:55.763 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:19:34.251 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/Fe_combined_rmse2.480_r20.579_[mapie|gpr|qrf].pkl
+2026-06-09 13:19:34.256 | INFO     | __main__:train_for_param:216 - 
+── Cu: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:30:45.364 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.1363  R²=-0.004  Coverage=91.26%  CalErr=0.0132
+2026-06-09 13:30:45.364 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.1343  R²=0.026  Coverage=91.43%  CalErr=0.0196
+2026-06-09 13:30:45.364 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.1359  R²=0.001  Coverage=89.88%  CalErr=0.0083
+2026-06-09 13:30:45.364 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.306), 'gpr': np.float64(0.206), 'qrf': np.float64(0.487)}
+2026-06-09 13:30:45.364 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:33:16.304 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/Cu_combined_rmse0.136_r2-0.004_[mapie|gpr|qrf].pkl
+2026-06-09 13:33:16.309 | INFO     | __main__:train_for_param:216 - 
+── B: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:44:22.197 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.5378  R²=-0.037  Coverage=90.00%  CalErr=0.0053
+2026-06-09 13:44:22.197 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.5274  R²=0.003  Coverage=88.38%  CalErr=0.0162
+2026-06-09 13:44:22.198 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.5867  R²=-0.234  Coverage=89.26%  CalErr=0.0144
+2026-06-09 13:44:22.198 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.59), 'gpr': np.float64(0.193), 'qrf': np.float64(0.217)}
+2026-06-09 13:44:22.198 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:47:29.899 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/B_combined_rmse0.538_r2-0.037_[mapie|gpr|qrf].pkl
+2026-06-09 13:47:29.905 | INFO     | __main__:train_for_param:216 - 
+── Zn: 5298 samples ──────────────────────────────
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 13:58:30.331 | INFO     | __main__:train_for_param:275 -   mapie  CV — RMSE=0.6966  R²=0.000  Coverage=91.19%  CalErr=0.0222
+2026-06-09 13:58:30.331 | INFO     | __main__:train_for_param:275 -   gpr    CV — RMSE=0.6899  R²=0.019  Coverage=91.69%  CalErr=0.0266
+2026-06-09 13:58:30.331 | INFO     | __main__:train_for_param:275 -   qrf    CV — RMSE=0.7179  R²=-0.061  Coverage=89.90%  CalErr=0.0144
+2026-06-09 13:58:30.331 | INFO     | __main__:train_for_param:289 -   Ensemble weights: {'mapie': np.float64(0.296), 'gpr': np.float64(0.247), 'qrf': np.float64(0.457)}
+2026-06-09 13:58:30.331 | INFO     | __main__:train_for_param:292 -   Training final models on full dataset (5298 samples)…
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+Warning: less than 75% GPU memory available for training. Free: 14489.9375 Total: 48539.4375
+2026-06-09 14:00:51.956 | SUCCESS  | __main__:train_for_param:337 -   Saved models → /home/jagat/shri/Soil-advisory/data/models/Zn_combined_rmse0.697_r20.000_[mapie|gpr|qrf].pkl
+2026-06-09 14:00:51.958 | INFO     | __main__:main:407 - 
+── Training Summary ────────────────────────────────────────
+2026-06-09 14:00:51.958 | INFO     | __main__:main:408 -   Param       RMSE      R²    Coverage
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   pH        0.2007   0.175      90.85%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   EC        0.5350   0.167      90.74%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   OC        0.1011   0.574      90.67%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   N        39.4599   0.299      90.87%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   P         9.1760  -0.037      90.33%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   K       114.5722  -0.045      90.17%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   Fe        2.4798   0.579      90.77%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   Cu        0.1363  -0.004      91.26%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   B         0.5378  -0.037      90.00%
+2026-06-09 14:00:51.958 | INFO     | __main__:main:411 -   Zn        0.6966   0.000      91.19%
