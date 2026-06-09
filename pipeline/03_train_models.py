@@ -82,13 +82,14 @@ def build_catboost(X_train, y_train, param: str):
         early_stopping_rounds=50,
         random_seed=42,
         verbose=0,
+        task_type="GPU",   # ← added
+        devices="0",       # ← added
     )
     model.fit(X_train, y_train)
     return model
 
 
 def build_mapie_catboost(X_train, y_train, param: str):
-    """CatBoost wrapped in MAPIE for conformal prediction intervals."""
     from catboost import CatBoostRegressor
     from mapie.regression import CrossConformalRegressor
 
@@ -98,13 +99,15 @@ def build_mapie_catboost(X_train, y_train, param: str):
         depth=6,
         random_seed=42,
         verbose=0,
+        task_type="GPU",   # ← added
+        devices="0",       # ← added
     )
     mapie = CrossConformalRegressor(
         estimator=base,
         confidence_level=0.90,
         method="plus",
         cv=3,
-        n_jobs=-1,
+        n_jobs=1,
     )
     mapie.fit_conformalize(X_train, y_train)
     return mapie
