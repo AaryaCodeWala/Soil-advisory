@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Typography base ─────────────────────────────────────────── */
+@layer base {
+  html { font-family: 'DM Sans', system-ui, sans-serif; }
+
+  body {
+    background-color: #F4F1EC;
+    background-image:
+      radial-gradient(ellipse 70% 60% at 15% -5%,  rgba(27,67,50,0.05)  0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 110%, rgba(212,168,83,0.05) 0%, transparent 55%);
+    color: #1C1714;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+  }
+}
+
+/* ── Custom range slider ─────────────────────────────────────── */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: #DDD8D0;
+  outline: none;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1B4332;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(27,67,50,0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(27,67,50,0.45);
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1B4332;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(27,67,50,0.35);
+  cursor: pointer;
+}
+
+/* ── Select / Input base ─────────────────────────────────────── */
+@layer components {
+  .field-input {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #DDD8D0;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #1C1714;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input::placeholder { color: #A89E97; }
+  .field-input:focus {
+    outline: none;
+    border-color: #2D6A4F;
+    box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+  }
+
+  .card {
+    background-color: #fff;
+    border-radius: 1rem;
+    border: 1px solid #EDE8E0;
+    box-shadow: 0 1px 3px rgba(28,23,20,0.06), 0 4px 16px rgba(28,23,20,0.05);
+  }
+
+  .card-header {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid #EDE8E0;
+    display: flex;
+    align-items: center;
+  }
+
+  .section-title {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #6B6560;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C5BFB8; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #A89E97; }
+
+/* ── Recharts tooltip ────────────────────────────────────────── */
+.recharts-default-tooltip {
+  border-radius: 10px !important;
+  border-color: #EDE8E0 !important;
+  box-shadow: 0 4px 16px rgba(28,23,20,0.10) !important;
+  font-family: 'DM Sans', system-ui !important;
+  font-size: 12px !important;
+}
