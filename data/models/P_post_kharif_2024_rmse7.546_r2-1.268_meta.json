@@ -1,0 +1,76 @@
+{
+  "param": "P",
+  "window": "post_kharif_2024",
+  "n_samples": 299,
+  "feature_cols": [
+    "Blue",
+    "Green",
+    "Red",
+    "RE1",
+    "RE2",
+    "RE3",
+    "NIR",
+    "NIR2",
+    "SWIR1",
+    "SWIR2",
+    "NDVI",
+    "BSI",
+    "SAVI",
+    "MSAVI2",
+    "EVI2",
+    "NDRE",
+    "NDWI",
+    "BI",
+    "SI1",
+    "SI2",
+    "NDSI",
+    "ClayIndex",
+    "AlOH",
+    "IronIndex",
+    "FerrousIndex",
+    "SWIR_ratio",
+    "RedEdge_ratio",
+    "CarbonateIndex",
+    "RI",
+    "CI_green",
+    "elevation",
+    "slope",
+    "aspect",
+    "hillshade",
+    "curvature",
+    "plan_curvature",
+    "profile_curvature",
+    "TWI"
+  ],
+  "cv_metrics": {
+    "mapie": {
+      "RMSE": 7.5457,
+      "MAE": 6.2354,
+      "R2": -1.2682,
+      "coverage_90": 0.9122,
+      "interval_width": 25.3981,
+      "calibration_error": 0.0611
+    },
+    "gpr": {
+      "RMSE": 7.4621,
+      "MAE": 5.9309,
+      "R2": -1.0886,
+      "coverage_90": 0.8464,
+      "interval_width": 23.7465,
+      "calibration_error": 0.1221
+    },
+    "qrf": {
+      "RMSE": 7.5028,
+      "MAE": 5.8676,
+      "R2": -1.0414,
+      "coverage_90": 0.7837,
+      "interval_width": 21.2891,
+      "calibration_error": 0.1441
+    }
+  },
+  "ensemble_weights": {
+    "mapie": 0.5196347382853584,
+    "gpr": 0.2600322859270087,
+    "qrf": 0.22033297578763292
+  }
+}
