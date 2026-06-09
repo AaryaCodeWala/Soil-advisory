@@ -5,22 +5,23 @@ Field-level soil health maps for Krishna District with calibrated confidence int
 
 ---
 
-## Quick Start (2 minutes)
+## Live Demo
 
-### Option A — Docker Compose (recommended)
+| Service | URL |
+|---------|-----|
+| **React Dashboard** | http://localhost:3000 |
+| **FastAPI Backend** | http://localhost:8000 |
+| **API Docs (Swagger)** | http://localhost:8000/docs |
 
-```bash
-# Clone and enter the repo
-git clone <repo-url> && cd soil-advisory
+---
 
-# Start API + dashboard (pre-generated maps are in data/processed/maps/)
-docker compose up api dashboard
-```
+## Quick Start
 
-- Dashboard: http://localhost:8050
-- API docs:   http://localhost:8000/docs
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
 
-### Option B — Local Python
+### 1. Backend
 
 ```bash
 python -m venv .venv
@@ -29,12 +30,18 @@ python -m venv .venv
 
 pip install -r requirements.txt
 
-# Dashboard
-python dashboard/app.py
-
-# API (separate terminal)
 uvicorn backend.main:app --reload --port 8000
 ```
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open **http://localhost:3000**
 
 ---
 
@@ -42,12 +49,13 @@ uvicorn backend.main:app --reload --port 8000
 
 | Output | Description |
 |--------|-------------|
-| **10 soil parameter maps** | pH, EC, OC, N, P, K, Fe, Cu, B, Zn — full Krishna District at 10 m |
-| **Confidence intervals** | 90% prediction intervals per pixel (conformal-guaranteed) |
-| **Confidence scores** | 0–1 score gating advisory outputs |
+| **10 soil parameter maps** | pH, EC, OC, N, P, K, Fe, Cu, B, Zn — Krishna District at 100 m |
+| **Confidence intervals** | 90% prediction intervals per pixel (conformal-guaranteed via MAPIE) |
+| **Confidence scores** | 0–1 score per pixel gating advisory outputs |
 | **Deficiency class maps** | ICAR-classified low/medium/high per pixel |
 | **Fertilizer advisory** | ICAR nutrient balance method, 4 crops, site-specific doses |
-| **Bilingual SMS** | English + Telugu, segment-counted, feature-phone ready |
+| **Bilingual SMS** | English + Telugu output, feature-phone ready |
+| **Satellite choropleth** | ESRI satellite imagery + soil overlay with hover tooltips |
 
 ---
 
@@ -56,68 +64,100 @@ uvicorn backend.main:app --reload --port 8000
 ```
 soil-advisory/
 ├── pipeline/
-│   ├── config.py                  # AOI, CRS, parameter list
-│   ├── 01_data_ingest.py          # GEE Sentinel-2 download
-│   ├── 02_feature_engineering.py  # 38-band feature stack (S2 + terrain)
-│   ├── 03_shc_processing.py       # Soil Health Card georeferencing
-│   ├── 03_train_models.py         # CatBoost+MAPIE, GP, Quantile RF
-│   ├── 04_extract_training_data.py# SHC → feature vector alignment
-│   ├── 05_predict_maps.py         # Pixel-level inference → GeoTIFFs
-│   ├── fertilizer_tables.py       # All ICAR crop/nutrient tables
-│   └── sms_formatter.py           # Bilingual SMS generation
+│   ├── config.py                   # AOI, CRS, parameter list
+│   ├── 01_data_ingest.py           # GEE Sentinel-2 download
+│   ├── 02_feature_engineering.py   # 40+ band feature stack
+│   ├── 03_train_models.py          # CatBoost+MAPIE, GPR, Quantile RF
+│   ├── 04_extract_training_data.py # SHC → feature vector alignment
+│   ├── 05_predict_maps.py          # Pixel-level inference → GeoTIFFs
+│   ├── fertilizer_tables.py        # All ICAR crop/nutrient tables
+│   ├── generate_synthetic_data.py  # Synthetic SHC augmentation
+│   └── crop_suitability.py         # ICAR threshold-based crop scoring
 ├── backend/
-│   ├── main.py                    # FastAPI app
+│   ├── main.py                     # FastAPI app
 │   └── routers/
-│       ├── maps.py                # GET /api/maps/{param}
-│       ├── recommendations.py     # POST /api/recommend
-│       └── sms.py                 # POST /api/sms
-├── dashboard/
-│   └── app.py                     # Plotly Dash — officials + farmer tabs
-├── gee/                           # Google Earth Engine scripts
-├── docs/
-│   └── methodology.md             # Full scientific writeup (11 sections)
+│       ├── maps.py                 # stats, points, raster PNG endpoints
+│       ├── recommendations.py      # POST /api/recommend
+│       ├── suitability.py          # POST /api/suitability
+│       ├── weather.py              # GET /api/weather/timing (Open-Meteo)
+│       └── sms.py                  # POST /api/sms
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── officials/          # District dashboard (satellite map, KPIs, charts)
+│   │   │   ├── farmer/             # Farmer portal (advisory, yield, pest, irrigation)
+│   │   │   └── admin/              # State admin view
+│   │   ├── App.jsx
+│   │   └── api.js
+│   ├── package.json
+│   └── vite.config.js
 ├── data/
-│   └── processed/maps/            # 50 prediction GeoTIFFs (pre-generated)
-├── Dockerfile
-├── docker-compose.yml
+│   ├── models/                     # Trained MAPIE + QRF artifacts + meta JSON
+│   └── processed/
+│       ├── combined_training_data.csv
+│       └── maps/                   # Prediction GeoTIFFs (regenerate if missing)
+├── colab_train.ipynb               # GPU training fallback (Google Colab)
 └── requirements.txt
 ```
 
 ---
 
-## Running the Full Pipeline (optional — maps already pre-generated)
+## Regenerating Prediction Maps
+
+Prediction map TIFs are excluded from the repo (245 MB total). To regenerate:
 
 ```bash
-# 1. Download Sentinel-2 composite from GEE
-python pipeline/01_data_ingest.py --window post_kharif_2024
+# Train models — skips already-trained params automatically
+python pipeline/03_train_models.py --combined --all-params --skip-done
 
-# 2. Build 38-band feature stack
-python pipeline/02_feature_engineering.py --window post_kharif_2024
-
-# 3. Process Soil Health Card data
-python pipeline/03_shc_processing.py
-
-# 4. Extract training features at SHC locations
-python pipeline/04_extract_training_data.py --window post_kharif_2024
-
-# 5. Train ensemble models
-python pipeline/03_train_models.py --window post_kharif_2024 --all-params
-
-# 6. Generate prediction maps for all 10 parameters
-python pipeline/05_predict_maps.py --window post_kharif_2024 --all-params
+# Generate Krishna District maps at 100 m (~3 min total)
+python pipeline/05_predict_maps.py --combined --all-params --no-gpr --no-qrf --downsample 10 --krishna
 ```
 
-Or with Docker (GPU-friendly):
-```bash
-docker compose --profile predict up predict
-```
+Maps are saved to `data/processed/maps/` and served automatically by the backend.
+
+For GPU training, use the included `colab_train.ipynb` on Google Colab (T4 GPU, ~15 min).
+
+---
+
+## Dashboard Features
+
+**Officials / District Dashboard**
+- Interactive satellite map (ESRI World Imagery) with soil choropleth overlay
+- Zoom in/out with scroll wheel; hover sample points to see exact values
+- Switch between all 10 soil parameters and confidence score layer
+- KPI cards: district mean, confidence %, deficient pixel %
+- Deficiency bar chart and confidence histogram per parameter
+
+**Farmer Advisory Portal** (English / Telugu)
+- Fertilizer recommendation engine (ICAR nutrient balance method)
+- Yield prediction vs. district average and optimised potential
+- Pest & disease alerts driven by live 7-day weather forecast (Open-Meteo)
+- Weather-aware fertilizer timing to avoid nutrient runoff
+- Crop suitability scoring for paddy, cotton, groundnut, red gram
+- Profitability calculator with MSP-based revenue projections
+- Irrigation scheduler, government schemes, crop calendar, carbon credit estimator
 
 ---
 
 ## API Reference
 
+### GET /api/maps/{param}/stats
+Summary statistics for a prediction map.
+
+```bash
+curl http://localhost:8000/api/maps/pH/stats?window=combined
+```
+
+### GET /api/maps/{param}/raster.png
+RdYlGn-coloured RGBA PNG for frontend choropleth overlay.
+
+```bash
+curl "http://localhost:8000/api/maps/pH/raster.png?window=combined" -o pH_map.png
+```
+
 ### POST /api/recommend
-Generate ICAR fertilizer recommendation for a field.
+ICAR fertilizer recommendation for a field.
 
 ```bash
 curl -X POST http://localhost:8000/api/recommend \
@@ -132,82 +172,75 @@ curl -X POST http://localhost:8000/api/recommend \
   }'
 ```
 
+### POST /api/suitability
+Score and rank all 4 AP focus crops against provided soil values.
+
+### GET /api/weather/timing
+7-day rain forecast with fertilizer application risk per day.
+
 ### POST /api/sms
-Generate bilingual SMS advisory (English + Telugu).
-
-```bash
-curl -X POST http://localhost:8000/api/sms \
-  -H "Content-Type: application/json" \
-  -d '{
-    "crop": "paddy",
-    "soil": {"pH": 6.8, "N": 210, "P": 14, "K": 145, "Zn": 0.3, "Fe": 3.2},
-    "area_acres": 2.5,
-    "farmer_name": "Ravi Reddy",
-    "lang": "both",
-    "mode": "short"
-  }'
-```
-
-### GET /api/maps/{param}
-Sample predicted values + confidence scores as JSON points.
+Bilingual English + Telugu fertilizer advisory SMS.
 
 Full interactive docs: **http://localhost:8000/docs**
 
 ---
 
-## Dashboard
+## ML Architecture
 
-Open **http://localhost:8050** and use the two tabs:
+| Model | Role |
+|-------|------|
+| **CatBoost + MAPIE** `CrossConformalRegressor` | Primary — 90% coverage-guaranteed prediction intervals |
+| **Gaussian Process Regressor** | Bayesian uncertainty, used during training CV only |
+| **Quantile Random Forest** | Asymmetric interval fallback (3× GradientBoostingRegressor) |
 
-**Officials Tab**
-- Select any of the 10 soil parameters from the dropdown
-- Toggle between predicted value and confidence score layers
-- KPI cards show district-level means and % deficient fields
-- Deficiency bar chart highlights which parameters need most attention
+Ensemble weighted by calibration error across spatial k-fold CV folds.
 
-**Farmer Advisory Tab**
-- Select crop and enter field area
-- Adjust soil test sliders (or type values from SHC)
-- Toggle English / Telugu using the language switch
-- Click "Generate Recommendation" for full NPK schedule, micronutrient corrections, and estimated cost savings vs. blanket application
+| Feature | Detail |
+|---------|--------|
+| **Conformal prediction** | MAPIE — mathematically guaranteed 90% coverage, not heuristic SDs |
+| **Spatial k-fold CV** | KMeans clustering on lat/lon — prevents autocorrelation leakage |
+| **Feature stack** | 40+ features: Sentinel-2 bands, spectral indices (BSI, clay, iron, NDRE, salinity), SRTM terrain (TWI, slope, curvature) |
+| **ICAR nutrient balance** | `Dose = (Crop Req − Soil Supply) / FUE` — traceable to AP guidelines |
+| **Telugu localisation** | Full UI and SMS output in Telugu |
+| **COG output** | Cloud-Optimized GeoTIFF with LZW compression |
 
 ---
 
-## Technical Highlights
+## Training Data
 
-| Feature | Implementation |
-|---------|---------------|
-| **Conformal prediction** | MAPIE `CrossConformalRegressor` — 90% coverage-guaranteed intervals, not heuristic SDs |
-| **Spatial k-fold CV** | 5-fold clustering on lat/lon — prevents spatial autocorrelation leakage |
-| **3-model ensemble** | CatBoost (accuracy) + GP (Bayesian UQ) + Quantile RF (asymmetric intervals), weighted by calibration error |
-| **38-feature stack** | 10 S2 bands + 20 spectral indices (BSI, clay index, iron index, NDRE, salinity) + 8 SRTM terrain derivatives |
-| **ICAR nutrient balance** | `Dose = (Crop Req − Soil Supply) / FUE` — traceable to published AP guidelines |
-| **Telugu localisation** | Full UI in Telugu throughout farmer advisory and SMS |
-| **COG output** | Cloud-Optimized GeoTIFF with LZW compression, 512×512 tiles |
-| **EPSG:32644** | UTM Zone 44N for all internal processing; EPSG:4326 at API boundaries only |
+| Source | Rows |
+|--------|------|
+| Real Soil Health Cards (AP) | 299 |
+| Synthetic augmentation | 5,000 |
+| **Total** | **5,299** |
+
+Synthetic data generated using spectral–soil correlations from real SHC samples and satellite feature distributions across Krishna District.
+
+---
+
+## Model Performance (Spatial CV)
+
+| Param | RMSE | R² | Coverage |
+|-------|------|----|----------|
+| pH | 0.201 | 0.171 | ~90% |
+| EC | 0.536 | 0.164 | ~90% |
+| OC | 0.101 | 0.575 | ~90% |
+| N | 39.4 | 0.301 | ~90% |
+| Fe | 2.484 | 0.578 | ~90% |
+| P, K, Cu, B, Zn | varies | low* | ~90% |
+
+*Low R² for micronutrients is expected — sparse SHC coverage limits accuracy, but conformal intervals remain calibrated regardless.
 
 ---
 
 ## Pilot Area
 
 - **District**: Krishna, Andhra Pradesh
-- **Extent**: 80.3–81.3°E, 15.7–16.7°N (~26,400 km²)
-- **Raster size**: 15,826 × 16,698 pixels at 10 m resolution
-- **Training samples**: 299 georeferenced SHC points
-- **Season**: Post-Kharif 2024 (Nov 2024 – Feb 2025 bare-soil composite)
+- **Bounds**: 80.58–81.62°E, 15.65–16.82°N
+- **Output resolution**: 100 m (downsample factor 10 from 10 m Sentinel-2)
+- **Season**: Post-Kharif 2024 bare-soil composite (NDVI < 0.25 mask)
+- **Crops**: Paddy, Cotton, Groundnut, Red Gram
 
 ---
 
-## Methodology
-
-See [`docs/methodology.md`](docs/methodology.md) for the full scientific writeup covering:
-- Bare-soil compositing and NDVI < 0.25 filtering
-- All 20 spectral indices with soil-science justification
-- Conformal prediction calibration results (90.5% coverage for pH)
-- Honest reporting of negative R² from spatial CV and why it is expected
-- ICAR nutrient balance equations with crop-specific FUE values
-- Economic impact quantification methodology
-
----
-
-*All ICAR values sourced from published guidelines for AP soils. Code and model artifacts in this repository.*
+*All ICAR values sourced from published guidelines for AP soils. Weather data from Open-Meteo (open-meteo.com). Satellite tiles from ESRI World Imagery.*
